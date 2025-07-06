@@ -1,25 +1,23 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-CREATE TABLE tbl_Cliente(
-    ID_Cliente VARCHAR(10) NOT NULL PRIMARY KEY,
-    Nome VARCHAR(100),
-    Sobrenome VARCHAR(100)
-);
+CREATE TABLE tbl_Cliente(ID_Cliente_PK VARCHAR(10) NOT NULL PRIMARY KEY, Nome VARCHAR(100), Sobrenome VARCHAR(100));
 INSERT INTO tbl_Cliente VALUES('CLI001','João','Pedro');
 INSERT INTO tbl_Cliente VALUES('CLI002','Renato','Oliveira');
 INSERT INTO tbl_Cliente VALUES('CLI003','Viviane','Chagas');
 INSERT INTO tbl_Cliente VALUES('CLI004','Manuele','Maria');
 INSERT INTO tbl_Cliente VALUES('CLI005','Ana','Silva');
 INSERT INTO tbl_Cliente VALUES('CLI006','Maria','Clara');
-CREATE TABLE tbl_Telefone_Cliente(
-    ID_Telefone_PK VARCHAR(10) NOT NULL PRIMARY KEY,
-    ID_Cliente_FK VARCHAR(10),
-    Num_Telefone INT(11),
-    FOREIGN KEY(ID_Cliente_FK) REFERENCES tbl_Cliente(ID_Cliente)
-);
+CREATE TABLE tbl_Telefone_Cliente(ID_Telefone_PK VARCHAR(10) NOT NULL PRIMARY KEY, ID_Cliente_FK VARCHAR(10), Num_Telefone INT(11), FOREIGN KEY(ID_Cliente_FK) REFERENCES tbl_Cliente(ID_Cliente_PK));
 INSERT INTO tbl_Telefone_Cliente VALUES('TEL001','3427443135','CLI001');
 INSERT INTO tbl_Telefone_Cliente VALUES('TEL002','34993773727','CLI001');
 INSERT INTO tbl_Telefone_Cliente VALUES('TEL003','9237585001','CLI002');
 INSERT INTO tbl_Telefone_Cliente VALUES('TEL004','4527431705','CLI004');
 INSERT INTO tbl_Telefone_Cliente VALUES('TEL005','41999092171','CLI005');
+CREATE TABLE tbl_Endereco_Cliente(ID_Endereco_PK VARCHAR(10) NOT NULL PRIMARY KEY, Rua VARCHAR(50), Num_Casa VARCHAR(10), Bairro VARCHAR(50), Cidade VARCHAR(50), ID_Cliente_FK VARCHAR(10), FOREIGN KEY(ID_Cliente_FK) REFERENCES tbl_Cliente(ID_Cliente_PK));
+INSERT INTO tbl_Endereco_Cliente VALUES('END001','Rua Oriximiná','549','Marambaia','Belém','CLI001');
+INSERT INTO tbl_Endereco_Cliente VALUES('END0002','Vila Sorriso','260','Terra Firme','Belém','CLI002');
+INSERT INTO tbl_Endereco_Cliente VALUES('END0003',NULL,NULL,NULL,NULL,'CLI003');
+INSERT INTO tbl_Endereco_Cliente VALUES('END0004','Passagem Apiraíba II','989','Maracacuera (Icoaraci)','Belém','CLI004');
+INSERT INTO tbl_Endereco_Cliente VALUES('END0005','Alameda Quatro','146','Parque Verde','Belém','CLI005');
+INSERT INTO tbl_Endereco_Cliente VALUES('END0006',NULL,NULL,NULL,NULL,'CLI006');
 COMMIT;
