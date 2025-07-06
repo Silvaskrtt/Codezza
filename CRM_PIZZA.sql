@@ -23,11 +23,15 @@ CREATE TABLE tbl_Telefone_Cliente(
     FOREIGN KEY(ID_Cliente_FK)
         REFERENCES tbl_Cliente(ID_Cliente_PK)
 );
-INSERT INTO tbl_Telefone_Cliente VALUES('TEL001','3427443135','CLI001');
-INSERT INTO tbl_Telefone_Cliente VALUES('TEL002','34993773727','CLI001');
-INSERT INTO tbl_Telefone_Cliente VALUES('TEL003','9237585001','CLI002');
-INSERT INTO tbl_Telefone_Cliente VALUES('TEL004','4527431705','CLI004');
-INSERT INTO tbl_Telefone_Cliente VALUES('TEL005','41999092171','CLI005');
+INSERT INTO tbl_Telefone_Cliente(
+    ID_Cliente_PK,
+    Nome,
+    Sobrenome) VALUES
+        ('TEL001','3427443135',     'CLI001'),
+        ('TEL002','34993773727',    'CLI001'),
+        ('TEL003','9237585001',     'CLI002'),
+        ('TEL004','4527431705',     'CLI004'),
+        ('TEL005','41999092171',    'CLI005');
 CREATE TABLE tbl_Endereco_Cliente(
     ID_Endereco_PK   VARCHAR(10) NOT NULL PRIMARY KEY,
     Rua              VARCHAR(50),
@@ -40,7 +44,7 @@ CREATE TABLE tbl_Endereco_Cliente(
         REFERENCES tbl_Cliente(ID_Cliente_PK)
 );
 INSERT INTO tbl_Endereco_Cliente VALUES('END001','Rua Oriximiná','549','Marambaia','Belém','CLI001');
-INSERT INTO tbl_Endereco_Cliente VALUES('END0002','Vila Sorriso','260','Terra Firme','Belém','CLI002');
+('END0002','Vila Sorriso','260','Terra Firme','Belém','CLI002');
 INSERT INTO tbl_Endereco_Cliente VALUES('END0003',NULL,NULL,NULL,NULL,'CLI003');
 INSERT INTO tbl_Endereco_Cliente VALUES('END0004','Passagem Apiraíba II','989','Maracacuera (Icoaraci)','Belém','CLI004');
 INSERT INTO tbl_Endereco_Cliente VALUES('END0005','Alameda Quatro','146','Parque Verde','Belém','CLI005');
