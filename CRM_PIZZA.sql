@@ -88,12 +88,12 @@ INSERT INTO tbl_Pedido(
     Hora, 
     ID_Cliente_FK, 
     ID_Status_Pedido_FK) VALUES
-        ('PED1001','04/07','20:44:00','CLI003','STP001'),
-        ('PED1002','02/05','18:30:00','CLI001','STP001'),
-        ('PED1003','13/03','21:00:00','CLI006','STP001'),
-        ('PED1004','01/04','19:30:00','CLI005','STP004'),
-        ('PED1005','07/05','19:30:00','CLI002','STP005'),
-        ('PED1006','04/07','19:30:00','CLI004','STP006');
+        ('PED1001','2025-04-07','20:44:00','CLI003','STP001'),
+        ('PED1002','2025-02-05','18:30:00','CLI001','STP001'),
+        ('PED1003','2025-03-13','21:00:00','CLI006','STP001'),
+        ('PED1004','2025-01-04','19:30:00','CLI005','STP004'),
+        ('PED1005','2025-07-05','19:30:00','CLI002','STP005'),
+        ('PED1006','2025-04-07','19:30:00','CLI004','STP006');
 CREATE TABLE tbl_Tipo_Pizza(
     ID_Tipo_Pizza_PK    VARCHAR(10) NOT NULL PRIMARY KEY, 
     Nome_Tipo           VARCHAR(25)
@@ -115,13 +115,15 @@ CREATE TABLE tbl_Sabor_Pizza(
 );
 INSERT INTO tbl_Sabor_Pizza(
     ID_Sabor_PK,
-    Nome_Pizza) VALUES
-        ('PZ001','Hello World de Chocolate',34.89999999999999858,   'TPI001'),
-        ('PZ002','Loop Frango BBQ',39.89999999999999858,            'TPI002'),
-        ('PZ003','Commit de Camarão',52.89999999999999858,          'TPI002'),
-        ('PZ004','Null Veggie',36.89999999999999858,                'TPI002'),
-        ('PZ005','Try-Catch Trufado',38.89999999999999858,          'TPI001'),
-        ('PZ006','404 - Pizza Not Found',44.89999999999999858,      'TPI003');
+    Nome_Pizza,
+    Preco,
+    ID_Tipo_Pizza_FK) VALUES
+        ('PZ001','Hello World de Chocolate',34.89,   'TPI001'),
+        ('PZ002','Loop Frango BBQ',39.89,            'TPI002'),
+        ('PZ003','Commit de Camarão',52.89,          'TPI002'),
+        ('PZ004','Null Veggie',36.89,                'TPI002'),
+        ('PZ005','Try-Catch Trufado',38.89,          'TPI001'),
+        ('PZ006','404 - Pizza Not Found',44.89,      'TPI003');
 CREATE TABLE IF NOT EXISTS "tbl_Itens_Pedido"(
     ID_Item_PK      VARCHAR(10) NOT NULL PRIMARY KEY,
     Qtd             INT,
@@ -141,12 +143,12 @@ INSERT INTO tbl_Itens_Pedido(
     Preco_Unit,
     ID_Sabor_FK,
     ID_Pedido_FK) VALUES
-        ('ITM0001',2,34.89999999999999858,'PZ001','PED1001'),
-        ('ITM0002',5,52.89999999999999858,'PZ003','PED1002'),
-        ('ITM0003',1,39.89999999999999858,'PZ002','PED1003'),
-        ('ITM0004',3,38.89999999999999858,'PZ005','PED1004'),
-        ('ITM0005',3,44.89999999999999858,'PZ006','PED1005'),
-        ('ITM0006',1,44.89999999999999858,'PZ006','PED1006');
+        ('ITM0001',2,34.89,'PZ001','PED1001'),
+        ('ITM0002',5,52.89,'PZ003','PED1002'),
+        ('ITM0003',1,39.89,'PZ002','PED1003'),
+        ('ITM0004',3,38.89,'PZ005','PED1004'),
+        ('ITM0005',3,44.89,'PZ006','PED1005'),
+        ('ITM0006',1,44.89,'PZ006','PED1006');
 CREATE TABLE tbl_Ingredientes(
     ID_Ingrediente_PK   VARCHAR(10) NOT NULL PRIMARY KEY, 
     Nome_Ingrediente    VARCHAR(100)
@@ -223,7 +225,7 @@ CREATE TABLE tbl_Comanda(
         REFERENCES tbl_Pedido(ID_Pedido_PK),
         
     FOREIGN KEY(ID_Status_Comanda_FK)
-        REFERENCES tbl_Comanda(ID_Status_Comanda_PK)
+        REFERENCES tbl_Status_Comanda(ID_Status_Comanda_PK)
 );
 INSERT INTO tbl_Comanda(
     ID_Comanda_PK,
@@ -233,10 +235,10 @@ INSERT INTO tbl_Comanda(
     ID_Cliente_FK,
     ID_Pedido_FK,
     ID_Status_Comanda_FK) VALUES
-    ('COM0001','20:44:00','04/07','20:55:00','CLI001','PED1001','STC001'),
-    ('COM0002','18:30:00','02/05','20:30:00','CLI002','PED1002','STC001'),
-    ('COM0003','21:00:00','13/03','22:10:00','CLI003','PED1003','STC001'),
-    ('COM0004','19:30:00','01/04','20:30:00','CLI004','PED1004','STC001'),
-    ('COM0005','19:30:00','07/05','21:30:00','CLI005','PED1005','STC002'),
-    ('COM0006','19:30:00','04/07','19:37:00','CLI006','PED1006','STC003');
+    ('COM0001','20:44:00','2025-04-07','20:55:00','CLI001','PED1001','STC001'),
+    ('COM0002','18:30:00','2025-02-05','20:30:00','CLI002','PED1002','STC001'),
+    ('COM0003','21:00:00','2025-03-13','22:10:00','CLI003','PED1003','STC001'),
+    ('COM0004','19:30:00','2025-01-04','20:30:00','CLI004','PED1004','STC001'),
+    ('COM0005','19:30:00','2025-07-05','21:30:00','CLI005','PED1005','STC002'),
+    ('COM0006','19:30:00','2025-04-07','19:37:00','CLI006','PED1006','STC003');
 COMMIT;
