@@ -18,15 +18,15 @@ INSERT INTO tbl_Cliente(
 CREATE TABLE tbl_Telefone_Cliente(
     ID_Telefone_PK  VARCHAR(10) NOT NULL PRIMARY KEY,
     ID_Cliente_FK   VARCHAR(10),
-    Num_Telefone    INT(11),
+    Num_Telefone    INTEGER,
 
     FOREIGN KEY(ID_Cliente_FK)
         REFERENCES tbl_Cliente(ID_Cliente_PK)
 );
 INSERT INTO tbl_Telefone_Cliente(
-    ID_Cliente_PK,
-    Nome,
-    Sobrenome) VALUES
+    ID_Telefone_PK,
+    Num_Telefone,
+    ID_Cliente_FK) VALUES
         ('TEL001','3427443135',     'CLI001'),
         ('TEL002','34993773727',    'CLI001'),
         ('TEL003','9237585001',     'CLI002'),
@@ -43,22 +43,32 @@ CREATE TABLE tbl_Endereco_Cliente(
     FOREIGN KEY(ID_Cliente_FK)
         REFERENCES tbl_Cliente(ID_Cliente_PK)
 );
-INSERT INTO tbl_Endereco_Cliente VALUES('END001','Rua Oriximiná','549','Marambaia','Belém','CLI001');
-('END0002','Vila Sorriso','260','Terra Firme','Belém','CLI002');
-INSERT INTO tbl_Endereco_Cliente VALUES('END0003',NULL,NULL,NULL,NULL,'CLI003');
-INSERT INTO tbl_Endereco_Cliente VALUES('END0004','Passagem Apiraíba II','989','Maracacuera (Icoaraci)','Belém','CLI004');
-INSERT INTO tbl_Endereco_Cliente VALUES('END0005','Alameda Quatro','146','Parque Verde','Belém','CLI005');
-INSERT INTO tbl_Endereco_Cliente VALUES('END0006',NULL,NULL,NULL,NULL,'CLI006');
+INSERT INTO tbl_Endereco_Cliente(
+    ID_Endereco_PK,
+    Rua,
+    Num_Casa,
+    Bairro,
+    Cidade,
+    ID_Cliente_FK) VALUES
+        ('END001','Rua Oriximiná','549','Marambaia','Belém',                        'CLI001'),
+        ('END0002','Vila Sorriso','260','Terra Firme','Belém',                      'CLI002'),
+        ('END0003',NULL,NULL,NULL,NULL,                                             'CLI003'),
+        ('END0004','Passagem Apiraíba II','989','Maracacuera (Icoaraci)','Belém',   'CLI004'),
+        ('END0005','Alameda Quatro','146','Parque Verde','Belém',                   'CLI005'),
+        ('END0006',NULL,NULL,NULL,NULL,                                             'CLI006');
 CREATE TABLE tbl_Status_Pedido(
     ID_Status_Pedido_PK     VARCHAR(10) NOT NULL PRIMARY KEY,
     Nome_Status_Pedido      VARCHAR(25)
 );
-INSERT INTO tbl_Status_Pedido VALUES('STP001','Recebido');
-INSERT INTO tbl_Status_Pedido VALUES('STP002','Em preparação');
-INSERT INTO tbl_Status_Pedido VALUES('STP003','Saiu para entrega');
-INSERT INTO tbl_Status_Pedido VALUES('STP004','Pronto');
-INSERT INTO tbl_Status_Pedido VALUES('STP005','Entregue');
-INSERT INTO tbl_Status_Pedido VALUES('STP006','Cancelado');
+INSERT INTO tbl_Status_Pedido(
+    ID_Status_Pedido_PK,
+    Nome_Status_Pedido) VALUES
+        ('STP001',           'Recebido'),
+        ('STP002','      Em preparação'),
+        ('STP003',  'Saiu para entrega'),
+        ('STP004',             'Pronto'),
+        ('STP005',           'Entregue'),
+        ('STP006',          'Cancelado');
 CREATE TABLE tbl_Pedido(
     ID_Pedido_PK            VARCHAR(10) NOT NULL PRIMARY KEY,
     Data                    DATE,
@@ -72,16 +82,28 @@ CREATE TABLE tbl_Pedido(
     FOREIGN KEY(ID_Status_Pedido_FK)
         REFERENCES tbl_Status_Pedido(ID_Status_Pedido_PK)
 );
-INSERT INTO tbl_Pedido VALUES('PED1001','04/07','20:44:00','CLI003','STP001');
-INSERT INTO tbl_Pedido VALUES('PED1002','02/05','18:30:00','CLI001','STP001');
-INSERT INTO tbl_Pedido VALUES('PED1003','13/03','21:00:00','CLI006','STP001');
-INSERT INTO tbl_Pedido VALUES('PED1004','01/04','19:30:00','CLI005','STP004');
-INSERT INTO tbl_Pedido VALUES('PED1005','07/05','19:30:00','CLI002','STP005');
-INSERT INTO tbl_Pedido VALUES('PED1006','04/07','19:30:00','CLI004','STP006');
-CREATE TABLE tbl_Tipo_Pizza(ID_Tipo_Pizza_PK VARCHAR(10) NOT NULL PRIMARY KEY, Nome_Tipo VARCHAR(25));
-INSERT INTO tbl_Tipo_Pizza VALUES('TPI001','Doce');
-INSERT INTO tbl_Tipo_Pizza VALUES('TPI002','Salgada');
-INSERT INTO tbl_Tipo_Pizza VALUES('TPI003','Personalizado');
+INSERT INTO tbl_Pedido(
+    ID_Pedido_PK, 
+    Data, 
+    Hora, 
+    ID_Cliente_FK, 
+    ID_Status_Pedido_FK) VALUES
+        ('PED1001','04/07','20:44:00','CLI003','STP001'),
+        ('PED1002','02/05','18:30:00','CLI001','STP001'),
+        ('PED1003','13/03','21:00:00','CLI006','STP001'),
+        ('PED1004','01/04','19:30:00','CLI005','STP004'),
+        ('PED1005','07/05','19:30:00','CLI002','STP005'),
+        ('PED1006','04/07','19:30:00','CLI004','STP006');
+CREATE TABLE tbl_Tipo_Pizza(
+    ID_Tipo_Pizza_PK    VARCHAR(10) NOT NULL PRIMARY KEY, 
+    Nome_Tipo           VARCHAR(25)
+);
+INSERT INTO tbl_Tipo_Pizza(
+    ID_Tipo_Pizza_PK,
+    Nome_Tipo) VALUES
+        ('TPI001',           'Doce'),
+        ('TPI002',        'Salgada'),
+        ('TPI003',  'Personalizado');
 CREATE TABLE tbl_Sabor_Pizza(
     ID_Sabor_PK         VARCHAR(10) NOT NULL PRIMARY KEY,
     Nome_Pizza          VARCHAR(100),
@@ -91,12 +113,15 @@ CREATE TABLE tbl_Sabor_Pizza(
     FOREIGN KEY(ID_Tipo_Pizza_FK)
         REFERENCES tbl_Tipo_Pizza(ID_Tipo_Pizza_PK)
 );
-INSERT INTO tbl_Sabor_Pizza VALUES('PZ001','Hello World de Chocolate',34.89999999999999858,'TPI001');
-INSERT INTO tbl_Sabor_Pizza VALUES('PZ002','Loop Frango BBQ',39.89999999999999858,'TPI002');
-INSERT INTO tbl_Sabor_Pizza VALUES('PZ003','Commit de Camarão',52.89999999999999858,'TPI002');
-INSERT INTO tbl_Sabor_Pizza VALUES('PZ004','Null Veggie',36.89999999999999858,'TPI002');
-INSERT INTO tbl_Sabor_Pizza VALUES('PZ005','Try-Catch Trufado',38.89999999999999858,'TPI001');
-INSERT INTO tbl_Sabor_Pizza VALUES('PZ006','404 - Pizza Not Found',44.89999999999999858,'TPI003');
+INSERT INTO tbl_Sabor_Pizza(
+    ID_Sabor_PK,
+    Nome_Pizza) VALUES
+        ('PZ001','Hello World de Chocolate',34.89999999999999858,   'TPI001'),
+        ('PZ002','Loop Frango BBQ',39.89999999999999858,            'TPI002'),
+        ('PZ003','Commit de Camarão',52.89999999999999858,          'TPI002'),
+        ('PZ004','Null Veggie',36.89999999999999858,                'TPI002'),
+        ('PZ005','Try-Catch Trufado',38.89999999999999858,          'TPI001'),
+        ('PZ006','404 - Pizza Not Found',44.89999999999999858,      'TPI003');
 CREATE TABLE IF NOT EXISTS "tbl_Itens_Pedido"(
     ID_Item_PK      VARCHAR(10) NOT NULL PRIMARY KEY,
     Qtd             INT,
@@ -110,30 +135,39 @@ CREATE TABLE IF NOT EXISTS "tbl_Itens_Pedido"(
     FOREIGN KEY(ID_Pedido_FK)
         REFERENCES tbl_Pedido(ID_Pedido_PK)
 );
-INSERT INTO tbl_Itens_Pedido VALUES('ITM0001',2,34.89999999999999858,'PZ001','PED1001');
-INSERT INTO tbl_Itens_Pedido VALUES('ITM0002',5,52.89999999999999858,'PZ003','PED1002');
-INSERT INTO tbl_Itens_Pedido VALUES('ITM0003',1,39.89999999999999858,'PZ002','PED1003');
-INSERT INTO tbl_Itens_Pedido VALUES('ITM0004',3,38.89999999999999858,'PZ005','PED1004');
-INSERT INTO tbl_Itens_Pedido VALUES('ITM0005',3,44.89999999999999858,'PZ006','PED1005');
-INSERT INTO tbl_Itens_Pedido VALUES('ITM0006',1,44.89999999999999858,'PZ006','PED1006');
+INSERT INTO tbl_Itens_Pedido(
+    ID_Item_PK,
+    Qtd,
+    Preco_Unit,
+    ID_Sabor_FK,
+    ID_Pedido_FK) VALUES
+        ('ITM0001',2,34.89999999999999858,'PZ001','PED1001'),
+        ('ITM0002',5,52.89999999999999858,'PZ003','PED1002'),
+        ('ITM0003',1,39.89999999999999858,'PZ002','PED1003'),
+        ('ITM0004',3,38.89999999999999858,'PZ005','PED1004'),
+        ('ITM0005',3,44.89999999999999858,'PZ006','PED1005'),
+        ('ITM0006',1,44.89999999999999858,'PZ006','PED1006');
 CREATE TABLE tbl_Ingredientes(
     ID_Ingrediente_PK   VARCHAR(10) NOT NULL PRIMARY KEY, 
     Nome_Ingrediente    VARCHAR(100)
 );
-INSERT INTO tbl_Ingredientes VALUES('ING001','Creme de avelã');
-INSERT INTO tbl_Ingredientes VALUES('ING002','Raspas de chocolate');
-INSERT INTO tbl_Ingredientes VALUES('ING003','Granulados coloridos');
-INSERT INTO tbl_Ingredientes VALUES('ING004','Frango desfiado');
-INSERT INTO tbl_Ingredientes VALUES('ING005','Molho barbecue');
-INSERT INTO tbl_Ingredientes VALUES('ING006','Milho');
-INSERT INTO tbl_Ingredientes VALUES('ING007','Camarões grelhados');
-INSERT INTO tbl_Ingredientes VALUES('ING008','Abobrinha');
-INSERT INTO tbl_Ingredientes VALUES('ING009','Brigadeiro trufado');
-INSERT INTO tbl_Ingredientes VALUES('ING010','Alho');
-INSERT INTO tbl_Ingredientes VALUES('ING011','Raspa limão');
-INSERT INTO tbl_Ingredientes VALUES('ING012','Pimentão');
-INSERT INTO tbl_Ingredientes VALUES('ING013','Tomate-cereja');
-INSERT INTO tbl_Ingredientes VALUES('ING014','Champignon');
+INSERT INTO tbl_Ingredientes(
+    ID_Ingrediente_PK,
+    Nome_Ingrediente) VALUES
+        ('ING001',        'Creme de avelã'),
+        ('ING002',   'Raspas de chocolate'),
+        ('ING003',  'Granulados coloridos'),
+        ('ING004',       'Frango desfiado'),
+        ('ING005',        'Molho barbecue'),
+        ('ING006',                 'Milho'),
+        ('ING007',    'Camarões grelhados'),
+        ('ING008',             'Abobrinha'),
+        ('ING009',    'Brigadeiro trufado'),
+        ('ING010',                  'Alho'),
+        ('ING011',           'Raspa limão'),
+        ('ING012',              'Pimentão'),
+        ('ING013',         'Tomate-cereja'),
+        ('ING014',            'Champignon');
 CREATE TABLE tbl_Pizza_Ingredientes(
     ID_Pizza_Ingrediente_PK     VARCHAR(10) NOT NULL PRIMARY KEY,
     ID_Sabor_FK                 VARCHAR(10),
@@ -145,27 +179,34 @@ CREATE TABLE tbl_Pizza_Ingredientes(
     FOREIGN KEY(ID_Ingrediente_FK)
         REFERENCES tbl_Ingredientes(ID_Ingrediente_PK)
 );
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL001','PZ001','ING001');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL002','PZ001','ING002');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL003','PZ001','ING003');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL004','PZ002','ING004');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL005','PZ002','ING005');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL006','PZ002','ING006');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL007','PZ003','ING007');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL008','PZ003','ING010');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL009','PZ003','ING011');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL010','PZ004','ING008');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL011','PZ004','ING012');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL012','PZ004','ING013');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL013','PZ004','ING014');
-INSERT INTO tbl_Pizza_Ingredientes VALUES('REL014','PZ005','ING009');
+INSERT INTO tbl_Pizza_Ingredientes(
+    ID_Pizza_Ingrediente_PK,
+    ID_Sabor_FK,
+    ID_Ingrediente_FK) VALUES
+        ('REL001','PZ001','ING001'),
+        ('REL002','PZ001','ING002'),
+        ('REL003','PZ001','ING003'),
+        ('REL004','PZ002','ING004'),
+        ('REL005','PZ002','ING005'),
+        ('REL006','PZ002','ING006'),
+        ('REL007','PZ003','ING007'),
+        ('REL008','PZ003','ING010'),
+        ('REL009','PZ003','ING011'),
+        ('REL010','PZ004','ING008'),
+        ('REL011','PZ004','ING012'),
+        ('REL012','PZ004','ING013'),
+        ('REL013','PZ004','ING014'),
+        ('REL014','PZ005','ING009');
 CREATE TABLE tbl_Status_Comanda(
     ID_Status_Comanda_PK    VARCHAR(10) NOT NULL PRIMARY KEY,
     Nome_Status_Comanda     VARCHAR(100)
 );
-INSERT INTO tbl_Status_Comanda VALUES('STC001','Aberta');
-INSERT INTO tbl_Status_Comanda VALUES('STC002','Fechada');
-INSERT INTO tbl_Status_Comanda VALUES('STC003','Cancelada');
+INSERT INTO tbl_Status_Comanda(
+    ID_Status_Comanda_PK,
+    Nome_Status_Comanda) VALUES
+        ('STC001',     'Aberta'),
+        ('STC002',    'Fechada'),
+        ('STC003',  'Cancelada');
 CREATE TABLE tbl_Comanda(
     ID_Comanda_PK           VARCHAR(10) NOT NULL PRIMARY KEY,
     Hora_Abertura           TIME,
@@ -184,10 +225,18 @@ CREATE TABLE tbl_Comanda(
     FOREIGN KEY(ID_Status_Comanda_FK)
         REFERENCES tbl_Comanda(ID_Status_Comanda_PK)
 );
-INSERT INTO tbl_Comanda VALUES('COM0001','20:44:00','04/07','20:55:00','CLI001','PED1001','STC001');
-INSERT INTO tbl_Comanda VALUES('COM0002','18:30:00','02/05','20:30:00','CLI002','PED1002','STC001');
-INSERT INTO tbl_Comanda VALUES('COM0003','21:00:00','13/03','22:10:00','CLI003','PED1003','STC001');
-INSERT INTO tbl_Comanda VALUES('COM0004','19:30:00','01/04','20:30:00','CLI004','PED1004','STC001');
-INSERT INTO tbl_Comanda VALUES('COM0005','19:30:00','07/05','21:30:00','CLI005','PED1005','STC002');
-INSERT INTO tbl_Comanda VALUES('COM0006','19:30:00','04/07','19:37:00','CLI006','PED1006','STC003');
+INSERT INTO tbl_Comanda(
+    ID_Comanda_PK,
+    Hora_Abertura,
+    Data_Fechamento,
+    Hora_Fechamento,
+    ID_Cliente_FK,
+    ID_Pedido_FK,
+    ID_Status_Comanda_FK) VALUES
+    ('COM0001','20:44:00','04/07','20:55:00','CLI001','PED1001','STC001'),
+    ('COM0002','18:30:00','02/05','20:30:00','CLI002','PED1002','STC001'),
+    ('COM0003','21:00:00','13/03','22:10:00','CLI003','PED1003','STC001'),
+    ('COM0004','19:30:00','01/04','20:30:00','CLI004','PED1004','STC001'),
+    ('COM0005','19:30:00','07/05','21:30:00','CLI005','PED1005','STC002'),
+    ('COM0006','19:30:00','04/07','19:37:00','CLI006','PED1006','STC003');
 COMMIT;
