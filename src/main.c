@@ -9,4 +9,11 @@ int main() {
 
     rc = sqlite3_open("CRM_PIZZA.db", &db);
 
+    if (rc) {
+        fprintf(stderr, "Erro ao abrir o banco: %s\n", sqlite3_errmsg(db));
+        return 1;
+    } else {
+        printf("Conexao com banco de dadis estabelecida com sucesso!\n");
+    }
+
 }
