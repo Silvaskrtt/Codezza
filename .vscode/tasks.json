@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compilar e Executar CRM_PIZZA",
+      "type": "shell",
+      "command": "gcc",
+      "args": [
+        "-o", "build/main.exe",
+        "src/main.c",
+        "src/db.c",
+        "src/gui.c",
+        "lib/sqlite3.c",
+        "-Iinclude",
+        "-luser32", "-lgdi32", // Caso use GUI via WinAPI
+        "&&", ".\\build\\main.exe"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "Compila e executa o projeto CRM_PIZZA"
+    }
+  ]
+}

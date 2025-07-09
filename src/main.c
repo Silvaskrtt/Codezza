@@ -10,7 +10,7 @@ int main() {
     int rc;
 
     // abrindo o banco de dados
-    rc = sqlite3_open("../database/CRM_PIZZA.db", &db);
+    rc = sqlite3_open("C:/Users/Murilo/Documents/Projeto_CRM_PIZZA/database/CRM_PIZZA.db", &db);
     // Verificando se a conexão deu certo
     if (rc) {
         fprintf(stderr, "Erro ao abrir o banco: %s\n", sqlite3_errmsg(db));
