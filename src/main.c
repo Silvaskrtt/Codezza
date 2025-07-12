@@ -20,7 +20,7 @@ int main() {
     char *erro = 0;
     int rc;
 
-    rc = sqlite3_open("C:/Users/Murilo/Documents/Projeto_CRM_PIZZA/database/CRM_PIZZA.db", &db);
+    rc = sqlite3_open("C:/Users/Murilo/Documents/Codezza/database/CODEZZA.db", &db);
     if (rc) {
         fprintf(stderr, "Erro ao abrir o banco: %s\n", sqlite3_errmsg(db));
         return 1;
