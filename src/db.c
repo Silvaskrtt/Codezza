@@ -4,10 +4,10 @@
 #include <sqlite3.h>
 #include "db.h"
 
-sqlite3 *db = NULL;
+sqlite3 *db = NULL; // Variável global do banco
 
 int conectar_banco(const char *caminho) {
-    SetConsoleOutputCP(CP_UTF8); // Suporte a caracteris especiais
+    SetConsoleOutputCP(CP_UTF8); // Suporte a UTF-8 no terminal
 
     int rc = sqlite3_open(caminho, &db);
     if (rc) {
