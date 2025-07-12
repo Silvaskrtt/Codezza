@@ -1,22 +1,19 @@
-#include <gtk/gtk.h>
-
-void activate_default(GtkWindow *self, gpointer user_data) {
-    g_print("Função ativada!\n");
-}
+#include <gtk/gtk.h>  // Inclusão da biblioteca GTK
 
 int main(int argc, char *argv[]) {
-    gtk_init(&argc, &argv);
+    GtkWidget *window;  // Ponteiro para o widget da janela
 
-    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Exemplo");
-    gtk_window_set_default_size(GTK_WINDOW(window), 300, 200);
+    gtk_init(&argc, &argv);  // Inicializa o GTK
 
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);  // Cria a janela principal
+    gtk_window_set_title(GTK_WINDOW(window), "Codezza");  // Define o título da janela
+    gtk_window_set_default_size(GTK_WINDOW(window), 1000, 720);  // Define tamanho padrão
+
+    // Conecta o evento de fechar janela ao encerramento do programa
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-    g_signal_connect(window, "key-press-event", G_CALLBACK(activate_default), NULL);
 
-    gtk_widget_show_all(window);
-
-    gtk_main();
+    gtk_widget_show_all(window);  // Exibe todos os widgets da janela
+    gtk_main();  // Inicia o loop principal (aguarda eventos)
 
     return 0;
 }
