@@ -2,18 +2,15 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Compilar e Executar Codezza",
+      "label": "Compilar e Executar Codezza (Somente C + SQLite3)",
       "type": "shell",
       "command": "gcc",
       "args": [
         "-o", "build/main.exe",
         "src/main.c",
         "src/db.c",
-        "src/gui.c",
         "lib/sqlite3.c",
         "-Iinclude",
-        "-luser32",
-        "-lgdi32",
         "&&",
         "./build/main.exe"
       ],
@@ -22,7 +19,7 @@
         "isDefault": true
       },
       "problemMatcher": [],
-      "detail": "Compila e executa o projeto Codezza"
+      "detail": "Compila e executa o projeto Codezza (sem GUI)"
     }
   ]
 }
