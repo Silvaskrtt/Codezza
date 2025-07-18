@@ -26,3 +26,5 @@ int callback(void *NotUsed, int argc, char **argv, char **colName) {
     printf("--------------\n");
     return 0;
 }
+
+char* gerar_novo_id(sqlite3 *db, const char *prefixo, const char *tabela, const char *coluna_id);
