@@ -5,11 +5,21 @@
 #include "db.h"
 
 // Função auxiliar para gerar novos IDs
-static char* gerar_novo_id(sqlite3 *db, const char *prefixo, const char *tabela, const char *coluna_id) {
-    sqlite3_stmt *stmt;
-    char *novoID = malloc(11); // CLI000 + null terminator
-    
-    char sql[100];
+char* gerar_novo_id(sqlite3 *db, const char *prefixo, const char *tabela, const char *coluna_id) {
+    if (!db || !prefixo || !tabela || !coluna_id) {
+        fprintf(stderr, "Parâmetros inválidos para gerar_novo_id\n");
+        return NULL;
+    }
+
+    sqlite3_stmt *stmt = NULL;
+    char *novoID = malloc(11); // Aloca espaço para o ID + null terminator
+    if (!novoID) {
+        fprintf(stderr, "Erro ao alocar memória para novo ID\n");
+        return NULL;
+    }
+    memset(novoID, 0, 11); // Inicializa com zeros
+
+    char sql[256];
     snprintf(sql, sizeof(sql), "SELECT %s FROM %s ORDER BY %s DESC LIMIT 1;", 
              coluna_id, tabela, coluna_id);
     
@@ -17,22 +27,36 @@ static char* gerar_novo_id(sqlite3 *db, const char *prefixo, const char *tabela,
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) == SQLITE_OK) {
         if (sqlite3_step(stmt) == SQLITE_ROW) {
             const unsigned char *ultimoID = sqlite3_column_text(stmt, 0);
-            if (ultimoID && strlen((const char *)ultimoID) >= strlen(prefixo)) {
-                ultimoNumero = atoi((const char *)ultimoID + strlen(prefixo));
+            if (ultimoID) {
+                const char *ptr_numero = (const char *)ultimoID + strlen(prefixo);
+                if (strlen(ptr_numero) > 0) {
+                    ultimoNumero = atoi(ptr_numero);
+                }
             }
         }
         sqlite3_finalize(stmt);
+    } else {
+        fprintf(stderr, "Erro ao buscar último ID: %s\n", sqlite3_errmsg(db));
+        free(novoID);
+        return NULL;
     }
     
-    sprintf(novoID, "%s%03d", prefixo, ultimoNumero + 1);
+    // Formata o novo ID com o prefixo e número sequencial
+    snprintf(novoID, 11, "%s%03d", prefixo, ultimoNumero + 1);
     return novoID;
 }
 
 char* cadastrarCliente(sqlite3 *db, const char *nome, const char *sobrenome) {
-    if (!nome || !sobrenome) return NULL;
+    if (!db || !nome || !sobrenome || strlen(nome) == 0 || strlen(sobrenome) == 0) {
+        fprintf(stderr, "Parâmetros inválidos para cadastrarCliente\n");
+        return NULL;
+    }
 
     char *novoID = gerar_novo_id(db, "CLI", "tbl_Cliente", "ID_Cliente_PK");
-    if (!novoID) return NULL;
+    if (!novoID) {
+        fprintf(stderr, "Erro ao gerar novo ID para cliente\n");
+        return NULL;
+    }
 
     sqlite3_stmt *stmt;
     const char *sql = "INSERT INTO tbl_Cliente(ID_Cliente_PK, Nome, Sobrenome) VALUES (?, ?, ?)";
@@ -45,6 +69,10 @@ char* cadastrarCliente(sqlite3 *db, const char *nome, const char *sobrenome) {
         
         resultado = sqlite3_step(stmt);
         sqlite3_finalize(stmt);
+    } else {
+        fprintf(stderr, "Erro ao preparar statement: %s\n", sqlite3_errmsg(db));
+        free(novoID);
+        return NULL;
     }
 
     if (resultado != SQLITE_DONE) {
@@ -57,36 +85,56 @@ char* cadastrarCliente(sqlite3 *db, const char *nome, const char *sobrenome) {
     return novoID;
 }
 
-void addTelefoneCliente(sqlite3 *db, const char *id_cliente, const char *telefone) {
-    if (!id_cliente || !telefone) return;
+int addTelefoneCliente(sqlite3 *db, const char *id_cliente, const char *telefone) {
+    if (!db || !id_cliente || !telefone || strlen(id_cliente) == 0 || strlen(telefone) == 0) {
+        fprintf(stderr, "Parâmetros inválidos para addTelefoneCliente\n");
+        return 0;
+    }
 
     char *novoID = gerar_novo_id(db, "TEL", "tbl_Telefone_Cliente", "ID_Telefone_PK");
-    if (!novoID) return;
+    if (!novoID) {
+        fprintf(stderr, "Erro ao gerar novo ID para telefone\n");
+        return 0;
+    }
 
     sqlite3_stmt *stmt;
     const char *sql = "INSERT INTO tbl_Telefone_Cliente(ID_Telefone_PK, ID_Cliente_FK, Num_Telefone) VALUES (?, ?, ?)";
     
+    int sucesso = 0;
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) == SQLITE_OK) {
         sqlite3_bind_text(stmt, 1, novoID, -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 2, id_cliente, -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(stmt, 3, telefone, -1, SQLITE_TRANSIENT);
         
-        if (sqlite3_step(stmt) != SQLITE_DONE) {
-            fprintf(stderr, "Erro ao adicionar telefone: %s\n", sqlite3_errmsg(db));
-        } else {
+        if (sqlite3_step(stmt) == SQLITE_DONE) {
             printf("Telefone cadastrado com ID: %s\n", novoID);
+            sucesso = 1;
+        } else {
+            fprintf(stderr, "Erro ao adicionar telefone: %s\n", sqlite3_errmsg(db));
         }
         sqlite3_finalize(stmt);
+    } else {
+        fprintf(stderr, "Erro ao preparar statement: %s\n", sqlite3_errmsg(db));
     }
+    
     free(novoID);
+    return sucesso;
 }
 
 char* addEnderecoCliente(sqlite3 *db, const char *id_cliente, const char *rua, 
                         const char *num_casa, const char *bairro, const char *cidade) {
-    if (!id_cliente || !rua || !num_casa || !bairro || !cidade) return NULL;
+    if (!db || !id_cliente || !rua || !num_casa || !bairro || !cidade ||
+        strlen(id_cliente) == 0 || strlen(rua) == 0 || strlen(num_casa) == 0 ||
+        strlen(bairro) == 0 || strlen(cidade) == 0) {
+        fprintf(stderr, "Parâmetros inválidos para addEnderecoCliente\n");
+        return NULL;
+    }
 
     char *novoID = gerar_novo_id(db, "END", "tbl_Endereco_Cliente", "ID_Endereco_PK");
-    if (!novoID) return NULL;
+    if (!novoID) {
+        fprintf(stderr, "Erro ao gerar novo ID para endereço\n");
+        return NULL;
+    }
 
     sqlite3_stmt *stmt;
     const char *sql = "INSERT INTO tbl_Endereco_Cliente(ID_Endereco_PK, Rua, Num_Casa, Bairro, Cidade, ID_Cliente_FK) "
@@ -109,6 +157,7 @@ char* addEnderecoCliente(sqlite3 *db, const char *id_cliente, const char *rua,
         }
         sqlite3_finalize(stmt);
     } else {
+        fprintf(stderr, "Erro ao preparar statement: %s\n", sqlite3_errmsg(db));
         free(novoID);
         novoID = NULL;
     }
@@ -163,6 +212,7 @@ void buscarClientePorID_e_Imprimir(sqlite3 *db, const char *id_cliente) {
     }
 
     sqlite3_finalize(stmt);
+
 }
 
 int main() {
@@ -171,35 +221,6 @@ int main() {
         fprintf(stderr, "Erro ao conectar ao banco de dados\n");
         return 1;
     }
-
-    int opcao;
-    char id_busca[20];
-
-    do {
-        printf("\nMENU DE BUSCA\n");
-        printf("1. Buscar cliente por ID\n");
-        printf("2. Sair\n");
-        printf("Escolha uma opção: ");
-        scanf("%d", &opcao);
-        getchar(); // Limpar buffer do teclado
-
-        switch(opcao) {
-            case 1:
-                printf("\nDigite o ID do cliente (ex: CLI001): ");
-                fgets(id_busca, sizeof(id_busca), stdin);
-                id_busca[strcspn(id_busca, "\n")] = '\0'; // Remover quebra de linha
-                
-                buscarClientePorID_e_Imprimir(db, id_busca);
-                break;
-                
-            case 2:
-                printf("Saindo...\n");
-                break;
-                
-            default:
-                printf("Opção inválida!\n");
-        }
-    } while (opcao != 2);
 
     sqlite3_close(db);
     return 0;
